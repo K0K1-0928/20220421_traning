@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample</title>
+  </head>
+  <body>
+    <p>
+      <label>入力欄: <input type="text" id="inputText" /></label>
+      <input type="button" value="確認" id="checkButton" />
+    </p>
+    <p id="result"></p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/2.0.0/encoding.min.js"></script>
+    <script>
+      const buttonClick = () => {
+        msg.innerText = sjisEncode(inputText.value);
+      };
+      const sjisEncode = (str) => {
+        const unicodeArray = Encoding.stringToCode(str);
+        const sjisArray = Encoding.convert(unicodeArray, {
+          to: 'SJIS',
+          from: 'UNICODE',
+        });
+        const removedSjisArray = sjisArray.filter(
+          (n) => n !== parseInt('5C', 16)
+        );
+        const encodedSjis = Encoding.codeToString(removedSjisArray);
+        const encodedSjisArray = Encoding.stringToCode(encodedSjis);
+        const encodedUnicodeArray = Encoding.convert(encodedSjisArray, {
+          to: 'UNICODE',
+          from: 'SJIS',
+        });
+        const result = Encoding.codeToString(encodedUnicodeArray);
+        return result;
+      };
+      let inputText = document.getElementById('inputText');
+      let msg = document.getElementById('result');
+      let checkButton = document.getElementById('checkButton');
+      checkButton.addEventListener('click', buttonClick);
+    </script>
+  </body>
+</html>
